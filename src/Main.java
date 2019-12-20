@@ -1,4 +1,3 @@
-import java.math.BigDecimal;
 import java.util.Scanner;
 
 public class Main
@@ -13,7 +12,7 @@ public class Main
         Jukebox jukebox = new Jukebox();
         jukebox.setUpSongList();
 
-        jukebox.songList.printSongList();
+        jukebox.getSongList().printSongList();
         //1. gooi geld in de machine
         //2. kies nummer
         //3. speel nummer
@@ -23,7 +22,6 @@ public class Main
         boolean insertingMoney = true;
         while (insertingMoney)
         {
-
             try
             {
                 System.out.println("\nInsert money");
@@ -53,12 +51,8 @@ public class Main
         System.out.println("Select a song from the playlist.");
         System.out.println("by typing the number of the song.");
 
-        //scanner.nextLine();
         int chosenSong = scanner.nextInt();
         jukebox.selectSong(chosenSong);
-
     }
-
-
+    
 }
-

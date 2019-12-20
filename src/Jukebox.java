@@ -1,15 +1,30 @@
 public class Jukebox
 {
 
-    public double balance;
-    public int soundVolume;
-    public CashDrawer cashDrawer;
-    public SongList songList;
+    private double balance;
+    private int soundVolume;
+    private CashDrawer cashDrawer;
+    private SongList songList;
 
     public Jukebox()
     {
         this.cashDrawer = new CashDrawer();
         this.songList = new SongList();
+    }
+    
+    public double getBalance()
+    {
+        return this.balance;
+    }
+    
+    public int getSoundVolume()
+    {
+        return this.soundVolume;
+    }
+    
+    public SongList getSongList()
+    {
+        return this.songList;
     }
 
     /**
@@ -23,20 +38,15 @@ public class Jukebox
         cashDrawer.revenue += money;
         System.out.printf("Balance: " + String.format("%.2f", getBalance()) + "\n");
     }
-
-
+    
+    /**
+     * Vul de songlist met liedjes
+     */
     public void setUpSongList()
     {
        this.songList.addSong("DuivenDisco", "DJ Koonstra", 5.00);
        this.songList.addSong("My new car", "Duitse koopman", 2.50);
        this.songList.addSong("Mijn moeder en ik", "YkelKampf", 1.50);
-
-    }
-
-
-    public double getBalance()
-    {
-        return this.balance;
     }
 
     public void higherVolume(int volumeUp)
@@ -49,32 +59,28 @@ public class Jukebox
         soundVolume += volumeDown;
     }
 
-    public int getSoundVolume()
-    {
-        return this.soundVolume;
-    }
-
     public void selectSong(int songNumber)
     {
         try
         {
-            double priceOfSong = this.songList.songArrayList.get(songNumber - 1).getPrice();
+            double priceOfSong = this.songList.getSongList().get(songNumber - 1).getPrice();
             if (this.balance - priceOfSong < 0)
             {
                 throw new IllegalArgumentException();
-            } else if (this.balance > priceOfSong)
+            }
+            else if (this.balance > priceOfSong)
             {
                 double change = this.balance - priceOfSong;
                 this.balance = 0;
-                cashDrawer.revenue -= change;
+                cashDrawer.revenue -= change; //revenue = revenue - change
                 System.out.println("Wisselgeld: €" + String.format("%.2f", change));
                 playSong(songNumber);
-            } else if (this.balance == priceOfSong)
+            }
+            else if (this.balance == priceOfSong)
             {
                 this.balance = 0;
                 playSong(songNumber);
             }
-
         }
         catch (IndexOutOfBoundsException e)
         {
@@ -85,13 +91,15 @@ public class Jukebox
             System.out.println("Je hebt te weinig saldo om dit nummer af te spelen.");
         }
     }
-
-    public void playSong(int songNumber)
+    
+    /**
+     * Speel een nummer af (eigenlijk wordt het nu geprint maar het gaat om het idee)
+     * @param songNumber Het nummer van het liedje dat moet worden afgespeeld
+     */
+    private void playSong(int songNumber)
     {
-        Song songToPlay = songList.songArrayList.get(songNumber - 1);
+        Song songToPlay = songList.getSongList().get(songNumber - 1);
         System.out.println("Now Playing: " + songToPlay.getTitle() + " - " + songToPlay.getArtist());
-
     }
-
-
+    
 }
