@@ -27,7 +27,7 @@ public class Main
                 System.out.println("\nInsert money");
                 jukebox.insertCash(scanner.nextDouble());
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 System.out.println("Wrong input.");
             }
@@ -37,22 +37,71 @@ public class Main
                 scanner.nextLine();
                 String decision = scanner.nextLine();
 
-                if(decision.toLowerCase().equals("y"))
+                if (decision.toLowerCase().equals("y"))
                 {
                     continue;
-                }
-                else if(decision.toLowerCase().equals("n"))
+                } else if (decision.toLowerCase().equals("n"))
                 {
                     insertingMoney = false;
+                } else
+                {
+                    System.out.println("Wrong input.");
+                    continue;
                 }
             }
         }
 
-        System.out.println("Select a song from the playlist.");
+        System.out.println("Select a song from the playlist");
         System.out.println("by typing the number of the song.");
 
-        int chosenSong = scanner.nextInt();
-        jukebox.selectSong(chosenSong);
+        boolean choosingSong = true;
+        while (choosingSong == true)
+        {
+            try
+            {
+                System.out.println("I want to hear song number: ");
+                int chosenSong = scanner.nextInt();
+                if (jukebox.selectSong(chosenSong))
+                {
+                    choosingSong = false;
+                }
+            }
+            catch (Exception e)
+            {
+                e.getMessage();
+                continue;
+            }
+        }
+
+        System.out.println("Volume: " + jukebox.getSoundVolume());
+        System.out.println("Use 'U' and 'D' to change the volume.");
+
+
+        boolean playingMusic = true;
+        while (playingMusic == true)
+        {
+            try
+            {
+                String volumeInput = scanner.nextLine();
+                if (volumeInput.toLowerCase().equals("u"))
+                {
+                    jukebox.higherVolume(1);
+                    System.out.println(jukebox.getSoundVolume());
+                    continue;
+                }
+                else if (volumeInput.toLowerCase().equals("d"))
+                {
+                    jukebox.lowerVolume(1);
+                    System.out.println(jukebox.getSoundVolume());
+                    continue;
+                }
+            }
+            catch (Exception e)
+            {
+                e.getMessage();
+            }
+        }
+
     }
-    
+
 }
