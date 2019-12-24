@@ -47,9 +47,9 @@ public class Jukebox
      */
     public void setUpSongList()
     {
-        this.songList.addSong("Basic (Acoustic)", "Sigrid", 5.00, ".\\music\\basic.mp3");
-        this.songList.addSong("Budapest cover", "Sigrid", 2.50, "budapest.mp3");
-        this.songList.addSong("Dynamite", "Sigrid", 1.50, "./music/dynamite.WAV");
+        this.songList.addSong("Basic (Acoustic)", "Sigrid", 5.00);
+        this.songList.addSong("Budapest cover", "Sigrid", 2.50);
+        this.songList.addSong("Dynamite", "Sigrid", 1.50);
     }
 
     public void higherVolume(int volumeUp)

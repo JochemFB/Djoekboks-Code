@@ -9,9 +9,9 @@ public class SongList
         return this.songList;
     }
 
-    public void addSong(String title, String artist, double price, String fileName)
+    public void addSong(String title, String artist, double price)
     {
-        Song songToAdd = new Song(title, artist, price, fileName);
+        Song songToAdd = new Song(title, artist, price);
 
         for(int i = 0; i < songList.size(); i++)
         {

@@ -6,15 +6,13 @@ public class Song
     private String artist;
     /** De prijs van het liedje */
     private double price;
-    /** De bestandsnaam van het liedje*/
-    private String fileName;
+
     
-    public Song(String title, String artist, double price, String fileName)
+    public Song(String title, String artist, double price)
     {
         this.title = title;
         this.artist = artist;
         this.price = price;
-        this.fileName = fileName;
     }
 
     public String getTitle()
@@ -32,8 +30,4 @@ public class Song
         return this.price;
     }
 
-    public String getFileName()
-    {
-        return this.fileName;
-    }
 }
