@@ -1,30 +1,40 @@
 import java.io.*;
 import javax.sound.sampled.*;
 
+
+import java.io.File;
+
+
 public class Jukebox
 {
 
-    private double balance;
-    private int soundVolume;
-    private CashDrawer cashDrawer;
-    private SongList songList;
+    private double balance; //De hoeveelheid geld die in de machine zit die gebruikt kan worden voor het betalen van nummers.
+    private CashDrawer cashDrawer; //De geldlade
+    private SongList songList; //De playlist met alle liedjes
+    private Clip clip; //Het nummer dat de jukebox afspeelt
+    private Float volume; //Het audio volume
 
     public Jukebox()
     {
         this.cashDrawer = new CashDrawer();
         this.songList = new SongList();
+        this.clip = null;
+        this.volume = -40.0f; //Het volume kan tussen de -80 en 6 liggen.
     }
 
+    /**
+     *
+     * @return balance
+     */
     public double getBalance()
     {
         return this.balance;
     }
 
-    public int getSoundVolume()
-    {
-        return this.soundVolume;
-    }
-
+    /**
+     *
+     * @return Een SongList object
+     */
     public SongList getSongList()
     {
         return this.songList;
@@ -37,31 +47,56 @@ public class Jukebox
      */
     public void insertCash(double money)
     {
-        balance += money;
-        cashDrawer.revenue += money;
+        this.balance += money;
+        this.cashDrawer.revenue += money;
         System.out.printf("Balance: " + String.format("%.2f", getBalance()) + "\n");
     }
 
     /**
-     * Vul de songlist met liedjes
+     * Verhoog het volume.
+     * @param value Het getal waarmee het volume verhoogd wordt
      */
-    public void setUpSongList()
+    public void higherVolume(float value)
     {
-        this.songList.addSong("Basic (Acoustic)", "Sigrid", 5.00);
-        this.songList.addSong("Budapest cover", "Sigrid", 2.50);
-        this.songList.addSong("Dynamite", "Sigrid", 1.50);
+        this.volume += value;
+        FloatControl gain = (FloatControl) this.clip.getControl(FloatControl.Type.MASTER_GAIN);
+
+        if (this.volume < 6)
+        {
+            gain.setValue(this.volume);
+            return;
+        }
+        else
+        {
+            System.out.println("Het geluid kan niet harder.");
+        }
     }
 
-    public void higherVolume(int volumeUp)
+    /**
+     * Verlaag het volume.
+     * @param value Het getal waarmee het volume verlaagd wordt
+     */
+    public void lowerVolume(float value)
     {
-        soundVolume += volumeUp;
+        this.volume -= value;
+        FloatControl gain = (FloatControl) this.clip.getControl(FloatControl.Type.MASTER_GAIN);
+
+        if (this.volume > -78)
+        {
+            gain.setValue(this.volume);
+            return;
+        }
+        else
+        {
+            System.out.println("Het geluid kan niet zachter.");
+        }
     }
 
-    public void lowerVolume(int volumeDown)
-    {
-        soundVolume -= volumeDown;
-    }
-
+    /**
+     *
+     * @param songNumber Het nummer van het liedje.
+     * @return Boolean. is er genoeg geld ingeworpen voor het gekozen nummer?
+     */
     public boolean selectSong(int songNumber)
     {
         try
@@ -99,7 +134,7 @@ public class Jukebox
     }
 
     /**
-     * Speel een nummer af (eigenlijk wordt het nu geprint maar het gaat om het idee)
+     * Speel een nummer af.
      *
      * @param songNumber Het nummer van het liedje dat moet worden afgespeeld
      */
@@ -107,6 +142,26 @@ public class Jukebox
     {
         Song songToPlay = songList.getSongList().get(songNumber - 1);
         System.out.println("Now Playing: " + songToPlay.getTitle() + " - " + songToPlay.getArtist());
+
+        String playFileName = "songs/" + songToPlay.getFileName();
+        try
+        {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(playFileName).getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            this.clip = clip;
+            clip.start();
+
+            //Thread.sleep(clip.getMicrosecondLength()/1000);
+
+        }
+        catch (Exception ex)
+        {
+            System.out.println("Error with playing sound.");
+
+            ex.printStackTrace();
+        }
+
     }
 
 }
