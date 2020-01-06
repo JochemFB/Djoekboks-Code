@@ -1,20 +1,12 @@
 public class Song
 {
-    /**
-     * De titel van het liedje
-     */
+    /** De titel van het liedje */
     private String title;
-    /**
-     * De artiest van het liedje
-     */
+    /** De artiest van het liedje */
     private String artist;
-    /**
-     * De prijs van het liedje
-     */
+    /** De prijs van het liedje */
     private double price;
-    /**
-     * De bestandsnaam van het nummer
-     */
+    /** De bestandsnaam van het nummer */
     private String fileName;
 
 

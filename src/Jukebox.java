@@ -105,7 +105,8 @@ public class Jukebox
             if (this.balance - priceOfSong < 0)
             {
                 return false;
-            } else if (this.balance > priceOfSong)
+            }
+            else if (this.balance > priceOfSong)
             {
                 double change = this.balance - priceOfSong;
                 this.balance = 0;
@@ -113,7 +114,8 @@ public class Jukebox
                 System.out.println("Wisselgeld: €" + String.format("%.2f", change));
                 playSong(songNumber);
                 return true;
-            } else if (this.balance == priceOfSong)
+            }
+            else if (this.balance == priceOfSong)
             {
                 this.balance = 0;
                 playSong(songNumber);
@@ -135,7 +137,6 @@ public class Jukebox
 
     /**
      * Speel een nummer af.
-     *
      * @param songNumber Het nummer van het liedje dat moet worden afgespeeld
      */
     private void playSong(int songNumber)
@@ -161,7 +162,15 @@ public class Jukebox
 
             ex.printStackTrace();
         }
-
+    }
+    
+    public void stopSong()
+    {
+        if (this.clip.isActive())
+        {
+            this.clip.stop();
+            this.clip.close();
+        }
     }
 
 }
