@@ -39,6 +39,15 @@ public class Jukebox
     {
         return this.songList;
     }
+    
+    /**
+     * Verkrijg de huidige clip
+     * @return De huidige clip
+     */
+    public Clip getClip()
+    {
+        return this.clip;
+    }
 
     /**
      * Gooi geld in de automaat

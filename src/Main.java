@@ -29,7 +29,17 @@ public class Main
             try
             {
                 System.out.println("\nInsert money");
-                jukebox.insertCash(scanner.nextDouble()); //Kan een exception gooien
+                String input = scanner.nextLine();
+                if (input.equals("xyz"))
+                {
+                    //beheermodus geactiveerd
+                    
+                    System.exit(0);
+                }
+                else
+                {
+                    jukebox.insertCash(Double.parseDouble(input)); //Kan een exception gooien
+                }
             }
             catch (Exception e) //Alles wat geen getal is.
             {
@@ -38,16 +48,17 @@ public class Main
             finally
             {
                 System.out.println("Insert more money? Y or N"); //Nog meer geld inwerpen?
-                scanner.nextLine();
                 String decision = scanner.nextLine();
 
                 if (decision.toLowerCase().equals("y")) //ja
                 {
                     continue;
-                } else if (decision.toLowerCase().equals("n")) //nee
+                }
+                else if (decision.toLowerCase().equals("n")) //nee
                 {
                     insertingMoney = false;
-                } else
+                }
+                else
                 {
                     System.out.println("Wrong input.");
                     continue;
@@ -60,12 +71,12 @@ public class Main
 
         //nummer kiezen
         boolean choosingSong = true;
-        while (choosingSong == true)
+        while (choosingSong)
         {
             try
             {
                 System.out.println("I want to hear song number: ");
-                int chosenSong = scanner.nextInt();
+                int chosenSong = Integer.parseInt(scanner.nextLine());
                 if (jukebox.selectSong(chosenSong))
                 {
                     choosingSong = false;
@@ -83,11 +94,12 @@ public class Main
 
         //Hier speelt de muziek af en kun je het volume wijzigen.
         boolean playingMusic = true;
-        while (playingMusic == true)
+        while (playingMusic)
         {
             try
             {
                 String volumeInput = scanner.nextLine();
+                // alles hierna wordt niet uitgevoerd als de gebruiker niets invoert
                 if (volumeInput.toLowerCase().equals("u"))
                 {
                     jukebox.higherVolume(4f);
@@ -97,6 +109,10 @@ public class Main
                 {
                     jukebox.lowerVolume(4f);
                     continue;
+                }
+                else if (!jukebox.getClip().isRunning())
+                {
+                    System.exit(0);
                 }
             }
             catch (Exception e)
