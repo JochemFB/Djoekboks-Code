@@ -36,7 +36,8 @@ public class SongList
             if (!(song.getArtist().toLowerCase().equals(artist.toLowerCase()) && song.getTitle().toLowerCase().equals(title.toLowerCase())))
             {
                 continue;
-            } else
+            }
+            else
             {
                 return;
             }
@@ -82,6 +83,7 @@ public class SongList
         this.songList.add(new Song("Mine Right Now", "Sigrid", 2.00, "Mine_Right_now.wav"));
         this.songList.add(new Song("Basic (Acoustic)", "Sigrid", 3.00, "Basic.wav"));
         this.songList.add(new Song("Dynamite", "Sigrid", 5.00, "Dynamite.WAV"));
+        this.songList.add(new Song("BRUH", "Your mom", 4.20, "BRUH.wav"));
     }
 
 }
