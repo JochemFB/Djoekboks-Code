@@ -153,7 +153,7 @@ public class Jukebox
             this.clip = clip;
             clip.start();
 
-            //Thread.sleep(clip.getMicrosecondLength()/1000);
+            Thread.sleep(clip.getMicrosecondLength()/1000);
 
         }
         catch (Exception ex)
