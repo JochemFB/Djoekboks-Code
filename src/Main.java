@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 public class Main
 {
-    public static void main(String[] args)
+    public static void main(String[] args) throws InterruptedException
     {
 
         System.out.println("Welcome to JukeBox!");
@@ -33,10 +33,9 @@ public class Main
                 if (input.equals("xyz"))
                 {
                     //beheermodus geactiveerd
-                    
+
                     System.exit(0);
-                }
-                else
+                } else
                 {
                     jukebox.insertCash(Double.parseDouble(input)); //Kan een exception gooien
                 }
@@ -53,12 +52,10 @@ public class Main
                 if (decision.toLowerCase().equals("y")) //ja
                 {
                     continue;
-                }
-                else if (decision.toLowerCase().equals("n")) //nee
+                } else if (decision.toLowerCase().equals("n")) //nee
                 {
                     insertingMoney = false;
-                }
-                else
+                } else
                 {
                     System.out.println("Wrong input.");
                     continue;
@@ -94,26 +91,42 @@ public class Main
 
         //Hier speelt de muziek af en kun je het volume wijzigen.
         boolean playingMusic = true;
+        boolean timerSet = false;
         while (playingMusic)
         {
             try
             {
+                if (!timerSet)
+                {
+                    new java.util.Timer().schedule(
+                            new java.util.TimerTask()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    jukebox.stopSong();
+                                    System.out.println("Goodbye!");
+                                    System.exit(0);
+                                }
+                            },
+                            jukebox.getClip().getMicrosecondLength() / 1000
+                    );
+                    timerSet = true;
+                }
+
                 String volumeInput = scanner.nextLine();
                 // alles hierna wordt niet uitgevoerd als de gebruiker niets invoert
                 if (volumeInput.toLowerCase().equals("u"))
                 {
                     jukebox.higherVolume(4f);
                     continue;
-                }
-                else if (volumeInput.toLowerCase().equals("d"))
+                } else if (volumeInput.toLowerCase().equals("d"))
                 {
                     jukebox.lowerVolume(4f);
                     continue;
                 }
-                else if (!jukebox.getClip().isRunning())
-                {
-                    System.exit(0);
-                }
+
+
             }
             catch (Exception e)
             {

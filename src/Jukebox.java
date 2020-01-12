@@ -162,7 +162,9 @@ public class Jukebox
             this.clip = clip;
             clip.start();
 
-            Thread.sleep(clip.getMicrosecondLength()/1000);
+
+            //
+            // Thread.sleep(clip.getMicrosecondLength()/1000);
 
         }
         catch (Exception ex)
@@ -172,13 +174,14 @@ public class Jukebox
             ex.printStackTrace();
         }
     }
-    
+
+
     public void stopSong()
     {
         if (this.clip.isActive())
         {
             this.clip.stop();
-            this.clip.close();
+            //this.clip.close();
         }
     }
 
