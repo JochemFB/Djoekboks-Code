@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class SongList
 {
@@ -55,12 +56,33 @@ public class SongList
         try
         {
             songList.remove(songToRemove - 1);
+            System.out.println("Song sucesfully deleted.");
         }
         catch (IndexOutOfBoundsException e)
         {
             System.out.println("Dit nummer bestaat niet: " + songToRemove);
         }
 
+    }
+    
+    /**
+     * Check if a song with a certain filename already exists in the songlist
+     * @param filename The filename to search for
+     * @return True if the song doesn't exist, false if it does
+     */
+    public boolean isUniqueSong(String filename)
+    {
+        boolean searching = true;
+        Iterator<Song> it = this.songList.iterator();
+        while (searching && it.hasNext())
+        {
+            Song currentSong = it.next();
+            if (currentSong.getFileName().equals(filename))
+            {
+                searching = false;
+            }
+        }
+        return searching;
     }
 
     /**

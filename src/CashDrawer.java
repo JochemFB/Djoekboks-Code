@@ -1,6 +1,16 @@
 public class CashDrawer
 {
-    public double revenue;
+    private double revenue;
+    
+    public void addMoneyToCashDrawer(double money)
+    {
+        this.revenue += money;
+    }
+    
+    public void removeMoneyFromCashDrawer(double money)
+    {
+        this.revenue -= money;
+    }
 
     /**
      * Leeg de geldlade
@@ -9,6 +19,11 @@ public class CashDrawer
     {
         System.out.println("You collected €" + getRevenue());
         revenue = 0.00;
+    }
+    
+    public void printRevenue()
+    {
+        System.out.println("Total revenue: " + String.format("%.02f", this.revenue));
     }
 
     /**
@@ -19,4 +34,14 @@ public class CashDrawer
     {
         return this.revenue;
     }
+    
+    /**
+     * Set the revenue
+     * @param revenue The revenue
+     */
+    public void setRevenue(double revenue)
+    {
+        this.revenue = revenue;
+    }
+    
 }

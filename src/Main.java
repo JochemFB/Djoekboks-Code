@@ -4,30 +4,41 @@ public class Main
 {
     public static void main(String[] args) throws InterruptedException
     {
-
         System.out.println("Welcome to JukeBox!");
-        System.out.println("\nAvailable songs:");
-
+    
         //De jukebox wordt aangemaakt.
         Jukebox jukebox = new Jukebox();
-
-        //De Beschikbare nummers worden weergegeven.
-        jukebox.getSongList().printSongList();
-
-        //Het gebruik van de jukebox bestaat uit 3 stappen.
-        //1. gooi geld in de machine
-        //2. kies nummer + speel af
-        //3. Wijzig volume
-
         //De scanner leest de user input.
         Scanner scanner = new Scanner(System.in);
-
+    
+        System.out.println("Do you want to activate admin mode? y/N:");
+        if (checkInput(scanner))
+        {
+            adminMode(jukebox, scanner);
+        }
+        else
+        {
+            userMode(jukebox, scanner);
+        }
+    }
+    
+    public static void userMode(Jukebox jukebox, Scanner scanner)
+    {
+        System.out.println("\nAvailable songs:");
+    
+        //De Beschikbare nummers worden weergegeven.
+        jukebox.getSongList().printSongList();
+    
+        //Het gebruik van de jukebox bestaat uit 2 stappen.
+        //1. gooi geld in de machine
+        //2. kies nummer + speel af
+    
         //Bezig met voldoende geld inwerpen en nummer kiezen
         boolean prepareToPlay = true;
-
+    
         //Bezig met geld inwerpen
         boolean insertingMoney = true;
-
+    
         //Bezig met nummer kiezen
         boolean choosingSong = true;
         while (prepareToPlay)
@@ -37,20 +48,11 @@ public class Main
             {
                 try
                 {
-                    System.out.println("\nInsert money");
+                    System.out.println("\nPlease insert some money:");
                     String input = scanner.nextLine();
-                    if (input.equals("xyz"))
-                    {
-                        //TODO: Beheerder mode toevoegen
-                        //beheermodus geactiveerd
-
-                        System.exit(0);
-                    } else
-                    {
-                        jukebox.insertCash(Double.parseDouble(input)); //Kan een exception gooien
-                        insertingMoney = false;
-                        break;
-                    }
+                    jukebox.insertCash(Double.parseDouble(input)); //Kan een exception gooien
+                    insertingMoney = false;
+                    break;
                 }
                 catch (Exception e) //Alles wat geen getal is.
                 {
@@ -83,13 +85,15 @@ public class Main
                     continue;
                 }
             }
-            if(!insertingMoney && !choosingSong){break;} //Uit de prepare loop springen
-
+            if (!insertingMoney && !choosingSong)
+            {
+                break; //Uit de prepare loop springen
+            }
             continue;
         }
-
+    
         //System.out.println("Use 'U' and 'D' to change the volume.");
-
+    
         //Hier speelt de muziek af en kun je het volume wijzigen.
         boolean playingMusic = true;
         boolean timerSet = false;
@@ -117,26 +121,119 @@ public class Main
                     );
                     timerSet = true; //De timer is nu geset. Door de boolean kan deze niet in de volgende while iteratie opnieuw geset worden.
                 }
-
-                //TODO: Alleen de beheerder mag dit doen
-                String volumeInput = scanner.nextLine();
-
-                if (volumeInput.toLowerCase().equals("u"))
-                {
-                    jukebox.higherVolume(4f);
-                    continue;
-                } else if (volumeInput.toLowerCase().equals("d"))
-                {
-                    jukebox.lowerVolume(4f);
-                    continue;
-                }
             }
             catch (Exception e)
             {
                 e.getMessage();
             }
         }
-
+    }
+    
+    public static void adminMode(Jukebox jukebox, Scanner scanner)
+    {
+        // Authorizatie
+        boolean enteringPassword = true;
+        while (enteringPassword)
+        {
+            System.out.println("Please enter the admin password:");
+            String password = scanner.nextLine();
+            if (password.equals("admin"))
+            {
+                enteringPassword = false;
+                System.out.println("The password is correct.");
+            }
+            else
+            {
+                System.out.println("The password is incorrect.");
+            }
+        }
+        
+        boolean inLoop = true;
+        while (inLoop)
+        {
+            // Geldlade legen
+            System.out.println("Do you want to empty the cash drawer? y/N:");
+            if (checkInput(scanner))
+            {
+                jukebox.getCashDrawer().emptyCashDrawer();
+                System.exit(0);
+            }
+    
+            // Overzicht printen
+            System.out.println("Do you want to print an overview? y/N:");
+            if (checkInput(scanner))
+            {
+                jukebox.printOverview();
+                System.exit(0);
+            }
+    
+            // Nummer verwijderen
+            System.out.println("Do you want to delete a song? y/N:");
+            if (checkInput(scanner))
+            {
+                jukebox.getSongList().printSongList();
+                System.out.println("Please select a song number to delete:");
+                int songToRemove = Integer.parseInt(scanner.nextLine());
+                jukebox.getSongList().removeSong(songToRemove);
+                System.exit(0);
+            }
+    
+            // Nummer toevoegen
+            System.out.println("Do you want to add a song? y/N:");
+            if (checkInput(scanner))
+            {
+                System.out.println("Now enter the song details.");
+                System.out.println("Song title:");
+                String title = scanner.nextLine();
+                System.out.println("Song artist:");
+                String artist = scanner.nextLine();
+                System.out.println("Price:");
+                double price = Double.parseDouble(scanner.nextLine());
+                System.out.println("Full filename:");
+                String filename = scanner.nextLine();
+        
+                // Als nummer niet bestaat, toevoegen
+                // Zowel, jammer, mag je alle stappen opnieuw doorlopen vanaf geldlade legen
+                if (jukebox.getSongList().isUniqueSong(filename))
+                {
+                    jukebox.getSongList().addSong(title, artist, price, filename);
+                    System.exit(0);
+                }
+                else
+                {
+                    System.out.println("There already exists a song with this filename");
+                }
+            }
+            else
+            {
+                inLoop = false;
+            }
+        }
+        
+        // Volume aanpassen
+        System.out.println("Do you want to change the volume? y/N:");
+        if (checkInput(scanner))
+        {
+            // Moet volume omhoog?
+            System.out.println("Do you want to turn the volume up? y/N:");
+            if (checkInput(scanner))
+            {
+                jukebox.higherVolume(4f);
+            }
+            else
+            {
+                System.out.println("The volume will be lowered by one interval.");
+            }
+        }
+        else
+        {
+            System.out.println("Thank you for administering this djoekbox.\nHave a good one.");
+        }
+    }
+    
+    private static boolean checkInput(Scanner scanner)
+    {
+        return scanner.nextLine().toLowerCase().equals("y");
     }
 
 }

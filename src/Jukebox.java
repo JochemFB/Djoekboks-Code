@@ -30,6 +30,15 @@ public class Jukebox
     {
         return this.balance;
     }
+    
+    /**
+     * Get the cashdrawer
+     * @return The cashdrawer
+     */
+    public CashDrawer getCashDrawer()
+    {
+        return this.cashDrawer;
+    }
 
     /**
      *
@@ -57,8 +66,13 @@ public class Jukebox
     public void insertCash(double money)
     {
         this.balance += money;
-        this.cashDrawer.revenue += money;
-        System.out.printf("Balance: " + String.format("%.2f", getBalance()) + "\n");
+        this.cashDrawer.addMoneyToCashDrawer(money);
+        this.printBalance();
+    }
+    
+    private void printBalance()
+    {
+        System.out.printf("Balance: " + String.format("%.2f", this.balance) + "\n");
     }
 
     /**
@@ -119,7 +133,7 @@ public class Jukebox
             {
                 double change = this.balance - priceOfSong;
                 this.balance = 0;
-                cashDrawer.revenue -= change; //revenue = revenue - change
+                this.cashDrawer.removeMoneyFromCashDrawer(change); //revenue = revenue - change
                 System.out.println("Wisselgeld: €" + String.format("%.2f", change));
                 playSong(songNumber);
                 return true;
@@ -183,6 +197,17 @@ public class Jukebox
             this.clip.stop();
             //this.clip.close();
         }
+    }
+    
+    /**
+     * Print an overview of this jukebox
+     */
+    public void printOverview()
+    {
+        printBalance();
+        this.cashDrawer.printRevenue();
+        System.out.println("Current songlist:");
+        this.getSongList().printSongList();
     }
 
 }
