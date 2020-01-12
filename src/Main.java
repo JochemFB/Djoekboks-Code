@@ -22,72 +22,73 @@ public class Main
         //De scanner leest de user input.
         Scanner scanner = new Scanner(System.in);
 
-        //Stap 1. Geld inwerpen
+        //Bezig met voldoende geld inwerpen en nummer kiezen
+        boolean prepareToPlay = true;
+
+        //Bezig met geld inwerpen
         boolean insertingMoney = true;
-        while (insertingMoney)
-        {
-            try
-            {
-                System.out.println("\nInsert money");
-                String input = scanner.nextLine();
-                if (input.equals("xyz"))
-                {
-                    //beheermodus geactiveerd
 
-                    System.exit(0);
-                } else
-                {
-                    jukebox.insertCash(Double.parseDouble(input)); //Kan een exception gooien
-                }
-            }
-            catch (Exception e) //Alles wat geen getal is.
-            {
-                System.out.println("Wrong input.");
-            }
-            finally
-            {
-                System.out.println("Insert more money? Y or N"); //Nog meer geld inwerpen?
-                String decision = scanner.nextLine();
-
-                if (decision.toLowerCase().equals("y")) //ja
-                {
-                    continue;
-                } else if (decision.toLowerCase().equals("n")) //nee
-                {
-                    insertingMoney = false;
-                } else
-                {
-                    System.out.println("Wrong input.");
-                    continue;
-                }
-            }
-        }
-
-        System.out.println("Select a song from the playlist");
-        System.out.println("by typing the number of the song.");
-
-        //nummer kiezen
+        //Bezig met nummer kiezen
         boolean choosingSong = true;
-        while (choosingSong)
+        while (prepareToPlay)
         {
-            try
+            //Stap 1. Geld inwerpen
+            while (insertingMoney)
             {
-                System.out.println("I want to hear song number: ");
-                int chosenSong = Integer.parseInt(scanner.nextLine());
-                if (jukebox.selectSong(chosenSong))
+                try
                 {
-                    choosingSong = false;
-                    break;
+                    System.out.println("\nInsert money");
+                    String input = scanner.nextLine();
+                    if (input.equals("xyz"))
+                    {
+                        //TODO: Beheerder mode toevoegen
+                        //beheermodus geactiveerd
+
+                        System.exit(0);
+                    } else
+                    {
+                        jukebox.insertCash(Double.parseDouble(input)); //Kan een exception gooien
+                        insertingMoney = false;
+                        break;
+                    }
+                }
+                catch (Exception e) //Alles wat geen getal is.
+                {
+                    System.out.println("This is invalid input.");
                 }
             }
-            catch (Exception e) //Niet bestaande nummers
+            //nummer kiezen
+            while (choosingSong)
             {
-                e.getMessage();
-                continue;
+                try
+                {
+                    System.out.println("Select a song from the playlist by typing the number of the song.");
+                    System.out.println("I want to hear song number: ");
+                    int chosenSong = Integer.parseInt(scanner.nextLine());
+                    if (jukebox.selectSong(chosenSong))
+                    {
+                        choosingSong = false;
+                        insertingMoney = false;
+                        break;
+                    } else if (!jukebox.selectSong(chosenSong))
+                    {
+                        System.out.println("Voer meer geld in");
+                        insertingMoney = true;
+                        break;
+                    }
+                }
+                catch (Exception e) //Niet bestaande nummers
+                {
+                    e.getMessage();
+                    continue;
+                }
             }
+            if(!insertingMoney && !choosingSong){break;} //Uit de prepare loop springen
+
+            continue;
         }
 
-        System.out.println("Use 'U' and 'D' to change the volume.");
+        //System.out.println("Use 'U' and 'D' to change the volume.");
 
         //Hier speelt de muziek af en kun je het volume wijzigen.
         boolean playingMusic = true;
@@ -96,6 +97,7 @@ public class Main
         {
             try
             {
+                //Check of de timer is geset.
                 if (!timerSet)
                 {
                     new java.util.Timer().schedule(
@@ -105,17 +107,20 @@ public class Main
                                 public void run()
                                 {
                                     jukebox.stopSong();
-                                    System.out.println("Goodbye!");
+                                    System.out.println("Thank you for using DjoekBoks! \nGoodbye");
                                     System.exit(0);
                                 }
                             },
+                            //De tijd die het duurt voordat de run() wordt uitgevoerd in seconden.
+                            //Deze is gelijk aan de lengte van het gekozen nummer
                             jukebox.getClip().getMicrosecondLength() / 1000
                     );
-                    timerSet = true;
+                    timerSet = true; //De timer is nu geset. Door de boolean kan deze niet in de volgende while iteratie opnieuw geset worden.
                 }
 
+                //TODO: Alleen de beheerder mag dit doen
                 String volumeInput = scanner.nextLine();
-                // alles hierna wordt niet uitgevoerd als de gebruiker niets invoert
+
                 if (volumeInput.toLowerCase().equals("u"))
                 {
                     jukebox.higherVolume(4f);
@@ -125,8 +130,6 @@ public class Main
                     jukebox.lowerVolume(4f);
                     continue;
                 }
-
-
             }
             catch (Exception e)
             {
