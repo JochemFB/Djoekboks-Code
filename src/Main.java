@@ -219,6 +219,7 @@ public class Main
             if (checkInput(scanner))
             {
                 jukebox.higherVolume(4f);
+                System.out.println("The volume will be increased by one interval.");
             }
             else
             {

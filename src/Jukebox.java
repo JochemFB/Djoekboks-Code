@@ -12,14 +12,14 @@ public class Jukebox
     private CashDrawer cashDrawer; //De geldlade
     private SongList songList; //De playlist met alle liedjes
     private Clip clip; //Het nummer dat de jukebox afspeelt
-    private Float volume; //Het audio volume
+    private static Float volume; //Het audio volume
 
     public Jukebox()
     {
         this.cashDrawer = new CashDrawer();
         this.songList = new SongList();
         this.clip = null;
-        this.volume = -40.0f; //Het volume kan tussen de -80 en 6 liggen.
+        volume = -40.0f; //Het volume kan tussen de -80 en 6 liggen.
     }
 
     /**
@@ -81,13 +81,11 @@ public class Jukebox
      */
     public void higherVolume(float value)
     {
-        this.volume += value;
-        FloatControl gain = (FloatControl) this.clip.getControl(FloatControl.Type.MASTER_GAIN);
-
-        if (this.volume < 6)
+        // Ensure volume can't go higher than 6
+        float tempVolume = volume + value;
+        if (tempVolume < 6)
         {
-            gain.setValue(this.volume);
-            return;
+            volume = tempVolume;
         }
         else
         {
@@ -101,13 +99,11 @@ public class Jukebox
      */
     public void lowerVolume(float value)
     {
-        this.volume -= value;
-        FloatControl gain = (FloatControl) this.clip.getControl(FloatControl.Type.MASTER_GAIN);
-
-        if (this.volume > -78)
+        // Ensure volume can't go lower than -78
+        float tempVolume = volume - value;
+        if (tempVolume > -78)
         {
-            gain.setValue(this.volume);
-            return;
+            volume = tempVolume;
         }
         else
         {
@@ -174,9 +170,10 @@ public class Jukebox
             Clip clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             this.clip = clip;
+            // Set the volume
+            FloatControl gain = (FloatControl) this.clip.getControl(FloatControl.Type.MASTER_GAIN);
+            gain.setValue(volume);
             clip.start();
-
-
             //
             // Thread.sleep(clip.getMicrosecondLength()/1000);
 
