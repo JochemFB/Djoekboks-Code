@@ -1,24 +1,30 @@
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Main
 {
-    public static void main(String[] args) throws InterruptedException
+    public static void main(String[] args)
     {
-        System.out.println("Welcome to JukeBox!");
-    
+
         //De jukebox wordt aangemaakt.
         Jukebox jukebox = new Jukebox();
         //De scanner leest de user input.
         Scanner scanner = new Scanner(System.in);
-    
-        System.out.println("Do you want to activate admin mode? y/N:");
-        if (checkInput(scanner))
+
+
+        while (true)
         {
-            adminMode(jukebox, scanner);
-        }
-        else
-        {
-            userMode(jukebox, scanner);
+            System.out.println("\nWelcome to JukeBox!");
+            System.out.println("Do you want to activate admin mode? y/N:");
+            if (checkInput(scanner))
+            {
+                adminMode(jukebox, scanner);
+            }
+            else
+            {
+                userMode(jukebox, scanner);
+            }
         }
     }
     
@@ -95,32 +101,49 @@ public class Main
         //System.out.println("Use 'U' and 'D' to change the volume.");
     
         //Hier speelt de muziek af en kun je het volume wijzigen.
-        boolean playingMusic = true;
-        boolean timerSet = false;
-        while (playingMusic)
+        jukebox.playingMusic = true;
+        jukebox.timerSet = false;
+        while (jukebox.playingMusic)
         {
             try
             {
                 //Check of de timer is geset.
-                if (!timerSet)
+                if (!jukebox.timerSet)
                 {
-                    new java.util.Timer().schedule(
-                            new java.util.TimerTask()
-                            {
-                                @Override
-                                public void run()
-                                {
-                                    jukebox.stopSong();
-                                    System.out.println("Thank you for using DjoekBoks! \nGoodbye");
-                                    System.exit(0);
-                                }
-                            },
-                            //De tijd die het duurt voordat de run() wordt uitgevoerd in seconden.
-                            //Deze is gelijk aan de lengte van het gekozen nummer
-                            jukebox.getClip().getMicrosecondLength() / 1000
-                    );
-                    timerSet = true; //De timer is nu geset. Door de boolean kan deze niet in de volgende while iteratie opnieuw geset worden.
+                    // Timer maken
+                    final Timer timer = new Timer();
+                    final TimerTask task = new TimerTask() {
+                        @Override
+                        public void run() {
+                            jukebox.stopSong();
+                            System.out.println("Thank you for using DjoekBoks! \nGoodbye");
+                            Jukebox.flipMusicStatus();
+                            timer.cancel();
+                            timer.purge();
+                        }
+                    };
+
+                    long delay = jukebox.getClip().getMicrosecondLength() / 1000;
+                    timer.schedule(task, delay);
+
+//                    new java.util.Timer().schedule(
+//                            new java.util.TimerTask()
+//                            {
+//                                @Override
+//                                public void run()
+//                                {
+//                                    jukebox.stopSong();
+//                                    System.out.println("Thank you for using DjoekBoks! \nGoodbye");
+//                                    jukebox.playingMusic = false;
+//                                }
+//                            },
+//                            //De tijd die het duurt voordat de run() wordt uitgevoerd in seconden.
+//                            //Deze is gelijk aan de lengte van het gekozen nummer
+//                            jukebox.getClip().getMicrosecondLength() / 1000
+//                    );
+                    jukebox.timerSet = true; //De timer is nu geset. Door de boolean kan deze niet in de volgende while iteratie opnieuw geset worden.
                 }
+                System.out.println(jukebox.playingMusic);
             }
             catch (Exception e)
             {
@@ -147,7 +170,7 @@ public class Main
                 System.out.println("The password is incorrect.");
             }
         }
-        
+
         boolean inLoop = true;
         while (inLoop)
         {
@@ -156,17 +179,17 @@ public class Main
             if (checkInput(scanner))
             {
                 jukebox.getCashDrawer().emptyCashDrawer();
-                System.exit(0);
+                return;
             }
-    
+
             // Overzicht printen
             System.out.println("Do you want to print an overview? y/N:");
             if (checkInput(scanner))
             {
                 jukebox.printOverview();
-                System.exit(0);
+                return;
             }
-    
+
             // Nummer verwijderen
             System.out.println("Do you want to delete a song? y/N:");
             if (checkInput(scanner))
@@ -175,9 +198,9 @@ public class Main
                 System.out.println("Please select a song number to delete:");
                 int songToRemove = Integer.parseInt(scanner.nextLine());
                 jukebox.getSongList().removeSong(songToRemove);
-                System.exit(0);
+                return;
             }
-    
+
             // Nummer toevoegen
             System.out.println("Do you want to add a song? y/N:");
             if (checkInput(scanner))
@@ -187,21 +210,33 @@ public class Main
                 String title = scanner.nextLine();
                 System.out.println("Song artist:");
                 String artist = scanner.nextLine();
-                System.out.println("Price:");
-                double price = Double.parseDouble(scanner.nextLine());
-                System.out.println("Full filename:");
-                String filename = scanner.nextLine();
-        
-                // Als nummer niet bestaat, toevoegen
-                // Zowel, jammer, mag je alle stappen opnieuw doorlopen vanaf geldlade legen
-                if (jukebox.getSongList().isUniqueSong(filename))
+                boolean inPriceLoop = true;
+                while(inPriceLoop)
                 {
-                    jukebox.getSongList().addSong(title, artist, price, filename);
-                    System.exit(0);
-                }
-                else
-                {
-                    System.out.println("There already exists a song with this filename");
+                    System.out.println("Price:");
+                    try
+                    {
+                        double price = Double.parseDouble(scanner.nextLine());
+                        System.out.println("Full filename:");
+                        String filename = scanner.nextLine();
+
+                        // Als nummer niet bestaat, toevoegen
+                        // Zowel, jammer, mag je alle stappen opnieuw doorlopen vanaf geldlade legen
+                        if (jukebox.getSongList().isUniqueSong(filename))
+                        {
+                            jukebox.getSongList().addSong(title, artist, price, filename);
+                            return;
+                        }
+                        else
+                        {
+                            System.out.println("There already exists a song with this filename");
+                            inPriceLoop = false;
+                        }
+                    }
+                    catch (NumberFormatException ex)
+                    {
+                        System.out.println("That is not the correct price.");
+                    }
                 }
             }
             else
@@ -209,7 +244,7 @@ public class Main
                 inLoop = false;
             }
         }
-        
+
         // Volume aanpassen
         System.out.println("Do you want to change the volume? y/N:");
         if (checkInput(scanner))
@@ -219,11 +254,16 @@ public class Main
             if (checkInput(scanner))
             {
                 jukebox.higherVolume(4f);
+                // TODO: print volume
                 System.out.println("The volume will be increased by one interval.");
+                return;
             }
             else
             {
+                jukebox.lowerVolume(4f);
+                // TODO: print volume
                 System.out.println("The volume will be lowered by one interval.");
+                return;
             }
         }
         else
