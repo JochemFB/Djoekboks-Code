@@ -13,14 +13,6 @@ public class Jukebox
     private Clip clip; //Het nummer dat de jukebox afspeelt
     private static Float volume; //Het audio volume
 
-    public static boolean playingMusic;
-    public boolean timerSet;
-
-    public static void flipMusicStatus()
-    {
-        playingMusic = !playingMusic;
-    }
-
     public Jukebox()
     {
         this.cashDrawer = new CashDrawer();

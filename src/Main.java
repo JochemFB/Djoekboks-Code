@@ -111,7 +111,6 @@ public class Main
                     @Override
                     public void run() {
                         jukebox.stopSong();
-                        Jukebox.flipMusicStatus();
                         timer.cancel();
                         timer.purge();
                     }
