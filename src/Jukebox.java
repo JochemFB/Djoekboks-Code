@@ -208,8 +208,8 @@ public class Jukebox
      */
     public void printOverview()
     {
-        printBalance();
-        this.cashDrawer.printRevenue();
+//        printBalance();
+//        this.cashDrawer.printRevenue();
         System.out.println("Current songlist:");
         this.getSongList().printSongList();
     }
