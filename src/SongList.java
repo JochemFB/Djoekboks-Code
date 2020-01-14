@@ -44,7 +44,7 @@ public class SongList
             }
         }
         songList.add(songToAdd);
-        //System.out.println(songToAdd.getTitle() + " - " + songToAdd.getArtist() + " is toegevoegd.");
+        System.out.println("Song succesfully added!");
     }
 
     /**
