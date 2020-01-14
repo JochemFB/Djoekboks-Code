@@ -101,9 +101,9 @@ public class Main
         //System.out.println("Use 'U' and 'D' to change the volume.");
     
         //Hier speelt de muziek af en kun je het volume wijzigen.
-        jukebox.playingMusic = true;
+        Jukebox.playingMusic = true;
         jukebox.timerSet = false;
-        while (jukebox.playingMusic)
+        while (Jukebox.playingMusic)
         {
             try
             {
@@ -143,7 +143,7 @@ public class Main
 //                    );
                     jukebox.timerSet = true; //De timer is nu geset. Door de boolean kan deze niet in de volgende while iteratie opnieuw geset worden.
                 }
-                System.out.println(jukebox.playingMusic);
+                System.out.println(Jukebox.playingMusic);
             }
             catch (Exception e)
             {
