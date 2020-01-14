@@ -193,6 +193,14 @@ public class Jukebox
         }
     }
 
+    /**
+     *
+     * @return True when clip is still playing, false if song is stopped
+     */
+    public boolean getClipStatus()
+    {
+        return this.clip.isActive();
+    }
 
     public void stopSong()
     {

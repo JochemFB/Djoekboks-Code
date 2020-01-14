@@ -97,57 +97,34 @@ public class Main
             }
             continue;
         }
-    
-        //System.out.println("Use 'U' and 'D' to change the volume.");
-    
+
         //Hier speelt de muziek af en kun je het volume wijzigen.
-        Jukebox.playingMusic = true;
-        jukebox.timerSet = false;
-        while (Jukebox.playingMusic)
+        boolean setTimer = true;
+        while(true)
         {
-            try
+            // één keer timer aanzetten en nooit weer
+            if (setTimer)
             {
-                //Check of de timer is geset.
-                if (!jukebox.timerSet)
-                {
-                    // Timer maken
-                    final Timer timer = new Timer();
-                    final TimerTask task = new TimerTask() {
-                        @Override
-                        public void run() {
-                            jukebox.stopSong();
-                            System.out.println("Thank you for using DjoekBoks! \nGoodbye");
-                            Jukebox.flipMusicStatus();
-                            timer.cancel();
-                            timer.purge();
-                        }
-                    };
+                // stel timer in
+                final Timer timer = new Timer();
+                final TimerTask task = new TimerTask() {
+                    @Override
+                    public void run() {
+                        jukebox.stopSong();
+                        Jukebox.flipMusicStatus();
+                        timer.cancel();
+                        timer.purge();
+                    }
+                };
 
-                    long delay = jukebox.getClip().getMicrosecondLength() / 1000;
-                    timer.schedule(task, delay);
-
-//                    new java.util.Timer().schedule(
-//                            new java.util.TimerTask()
-//                            {
-//                                @Override
-//                                public void run()
-//                                {
-//                                    jukebox.stopSong();
-//                                    System.out.println("Thank you for using DjoekBoks! \nGoodbye");
-//                                    jukebox.playingMusic = false;
-//                                }
-//                            },
-//                            //De tijd die het duurt voordat de run() wordt uitgevoerd in seconden.
-//                            //Deze is gelijk aan de lengte van het gekozen nummer
-//                            jukebox.getClip().getMicrosecondLength() / 1000
-//                    );
-                    jukebox.timerSet = true; //De timer is nu geset. Door de boolean kan deze niet in de volgende while iteratie opnieuw geset worden.
-                }
-                System.out.println(Jukebox.playingMusic);
+                long delay = jukebox.getClip().getMicrosecondLength() / 1000;
+                timer.schedule(task, delay);
+                setTimer = false;
             }
-            catch (Exception e)
+            if (!jukebox.getClipStatus())
             {
-                e.getMessage();
+                System.out.println("Thank you for using DjoekBoks! \nGoodbye");
+                break;
             }
         }
     }
